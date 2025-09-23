@@ -20,7 +20,8 @@
     nav {
       background: #333;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      padding: 0 1rem;
     }
     nav a {
       color: white;
@@ -29,6 +30,15 @@
     }
     nav a:hover {
       background: #575757;
+    }
+    #login-btn {
+      margin-left: auto;
+      padding:0.5rem 1rem;
+      background:#4CAF50;
+      color:white;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
     }
     .container {
       max-width: 1200px;
@@ -109,33 +119,6 @@
       padding: 0.5rem;
       resize: none;
     }
-    #lock-screen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #lock-screen input {
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: none;
-      margin-top: 0.5rem;
-    }
-    #lock-screen button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      background: #4CAF50;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
     footer {
       text-align: center;
       padding: 1rem;
@@ -183,6 +166,53 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    /* Login modal */
+    #login-modal-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
+      cursor: pointer;
+    }
+    #login-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 10001;
+      width: 300px;
+      text-align: center;
+    }
+    #login-modal input {
+      width: 80%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #login-modal button {
+      padding: 0.3rem 0.8rem;
+      margin: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #unlock-btn {
+      background: #4CAF50;
+      color: white;
+    }
+    #cancel-btn {
+      background: #e53935;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -190,11 +220,11 @@
   <!-- Sticky Warning Bar -->
   <div id="readonly-banner">
     🔒 Read-only mode – enter password to edit tasks & notes
-    <button id="close-banner" onclick="dismissBanner()">❌</button>
+    <button onclick="dismissBanner()">❌</button>
   </div>
 
   <header>
-    <h1>Welcome to My Home Page</h1>
+    <h1>Welcome to Carson Idler's Home Page</h1>
     <p>Hello, I'm Carson Idler 👋</p>
   </header>
 
@@ -204,6 +234,7 @@
     <a href="#">Projects</a>
     <a href="#">Dashboard</a>
     <a href="#">Contact</a>
+    <button id="login-btn" onclick="showLogin()">Login</button>
   </nav>
 
   <div class="container">
@@ -211,11 +242,7 @@
     <div class="profile">
       <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
       <h2>About Me</h2>
-      <p>
-        Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself,
-        my favorite projects, and useful links.
-      </p>
-
+      <p>Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself, my favorite projects, and useful links.</p>
       <h2>My Links</h2>
       <ul>
         <li><a href="https://example.com">My Website</a></li>
@@ -228,7 +255,6 @@
     <div class="dashboard">
       <h2>My Dashboard</h2>
       <div class="dashboard-grid">
-        
         <!-- To-Do List -->
         <div class="widget">
           <h3>📅 To-Do List</h3>
@@ -272,7 +298,6 @@
             allowtransparency="true">
           </iframe>
         </div>
-
       </div>
       <button id="logout-btn" onclick="logout()">🔒 Logout</button>
     </div>
@@ -282,18 +307,23 @@
     <p>&copy; 2025 Carson Idler. All rights reserved.</p>
   </footer>
 
-  <!-- Lock Screen -->
-  <div id="lock-screen">
-    <h2>🔒 Enter Password to Edit</h2>
+  <!-- Login Background Overlay -->
+  <div id="login-modal-bg" onclick="closeLogin()"></div>
+
+  <!-- Login Modal -->
+  <div id="login-modal">
+    <h3>🔒 Enter Password to Edit</h3>
     <input type="password" id="password-input" placeholder="Password">
-    <button onclick="checkPassword()">Unlock</button>
-    <p id="error" style="color: red;"></p>
+    <div>
+      <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
+      <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
+    </div>
+    <p id="error" style="color:red; margin-top:0.5rem;"></p>
   </div>
 
   <script>
     let editable = false;
 
-    // Load saved data
     window.onload = () => {
       const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
       const savedNotes = localStorage.getItem("notes") || "";
@@ -301,12 +331,23 @@
       document.getElementById("notes").value = savedNotes;
     };
 
-    // Check password
+    function showLogin() {
+      document.getElementById("login-modal-bg").style.display = "block";
+      document.getElementById("login-modal").style.display = "block";
+    }
+
+    function closeLogin() {
+      document.getElementById("login-modal-bg").style.display = "none";
+      document.getElementById("login-modal").style.display = "none";
+      document.getElementById("error").innerText = "";
+      document.getElementById("password-input").value = "";
+    }
+
     function checkPassword() {
       const input = document.getElementById("password-input").value;
-      if (input === "cidler6901") {
+      if(input === "cidler6901") {
         editable = true;
-        document.getElementById("lock-screen").style.display = "none";
+        closeLogin();
         document.getElementById("todo-input").disabled = false;
         document.getElementById("add-btn").disabled = false;
         document.getElementById("notes").disabled = false;
@@ -318,36 +359,27 @@
       }
     }
 
-    // Logout
     function logout() {
       editable = false;
       document.getElementById("todo-input").disabled = true;
       document.getElementById("add-btn").disabled = true;
       document.getElementById("notes").disabled = true;
       document.getElementById("logout-btn").style.display = "none";
-      document.getElementById("lock-screen").style.display = "flex";
       fadeIn(document.getElementById("readonly-banner"));
       refreshTasks();
     }
 
-    // Dismiss the banner manually
     function dismissBanner() {
       fadeOut(document.getElementById("readonly-banner"));
     }
 
-    // Smooth fade helpers
-    function fadeOut(el) {
-      el.classList.add("hidden");
-    }
-    function fadeIn(el) {
-      el.classList.remove("hidden");
-    }
+    function fadeOut(el) { el.classList.add("hidden"); }
+    function fadeIn(el) { el.classList.remove("hidden"); }
 
-    // Add task
     function addTask() {
       const input = document.getElementById("todo-input");
       const taskText = input.value.trim();
-      if (taskText !== "") {
+      if(taskText !== "") {
         addTaskToDOM(taskText);
         saveTasks();
         input.value = "";
@@ -360,28 +392,24 @@
       document.getElementById("todo-list").appendChild(li);
     }
 
-    // Remove task
     function removeTask(button) {
       button.parentElement.remove();
       saveTasks();
     }
 
-    // Save tasks
     function saveTasks() {
-      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => li.innerText.replace("X", "").trim());
+      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => li.innerText.replace("X","").trim());
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    // Refresh tasks so they show correct edit buttons
     function refreshTasks() {
       const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       document.getElementById("todo-list").innerHTML = "";
       tasks.forEach(task => addTaskToDOM(task));
     }
 
-    // Save notes automatically
     document.getElementById("notes").addEventListener("input", () => {
-      if (editable) {
+      if(editable) {
         localStorage.setItem("notes", document.getElementById("notes").value);
       }
     });

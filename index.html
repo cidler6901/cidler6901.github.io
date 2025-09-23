@@ -213,4 +213,174 @@
   </div>
 
   <header>
-    <h1>Welco
+    <h1>Welcome to Carson Idler's Home Page</h1>
+    <p>Hello, I'm Carson Idler 👋</p>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Projects</a>
+    <a href="#">Dashboard</a>
+    <a href="#">Contact</a>
+    <button id="login-btn" onclick="showLogin()">Login</button>
+  </nav>
+
+  <div class="container">
+    <div class="profile">
+      <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
+      <h2>About Me</h2>
+      <p>Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself, my favorite projects, and useful links.</p>
+    </div>
+
+    <div class="dashboard">
+      <h2>My Dashboard</h2>
+      <div class="dashboard-grid">
+        <div class="widget">
+          <h3>📅 To-Do List</h3>
+          <ul class="todo-list" id="todo-list"></ul>
+          <div class="todo-input">
+            <input type="text" id="todo-input" placeholder="New task..." disabled>
+            <button onclick="addTask()" id="add-btn" disabled>Add</button>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h3>📝 Notes</h3>
+          <textarea id="notes" disabled></textarea>
+        </div>
+      </div>
+      <button id="logout-btn" onclick="logout()">🔒 Logout</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Carson Idler. All rights reserved.</p>
+  </footer>
+
+  <div id="login-modal-bg" onclick="closeLogin()"></div>
+
+  <div id="login-modal">
+    <h3>🔒 Login</h3>
+    <input type="text" id="username-input" placeholder="Username">
+    <input type="password" id="password-input" placeholder="Password">
+    <div>
+      <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
+      <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
+    </div>
+    <p id="error" style="color:red; margin-top:0.5rem;"></p>
+  </div>
+
+  <script>
+    let editable = false;
+
+    window.onload = () => {
+      const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const savedNotes = localStorage.getItem("notes") || "";
+      savedTasks.forEach(task => addTaskToDOM(task));
+      document.getElementById("notes").value = savedNotes;
+    };
+
+    function showLogin() {
+      document.getElementById("login-modal-bg").style.display = "block";
+      document.getElementById("login-modal").style.display = "block";
+    }
+
+    function closeLogin() {
+      document.getElementById("login-modal-bg").style.display = "none";
+      document.getElementById("login-modal").style.display = "none";
+      document.getElementById("error").innerText = "";
+      document.getElementById("username-input").value = "";
+      document.getElementById("password-input").value = "";
+    }
+
+    function checkPassword() {
+      const username = document.getElementById("username-input").value.trim();
+      const password = document.getElementById("password-input").value;
+
+      const users = {
+        "cidler6901": "ci259026901",
+        "tmiller1430": "silvermiler1234"
+      };
+
+      if(users[username] && users[username] === password) {
+        editable = true;
+        localStorage.setItem("currentUser", username);
+        localStorage.setItem("role", username === "cidler6901" ? "admin" : "user");
+
+        const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
+        logs.push(`${new Date().toLocaleString()}: User '${username}' logged in.`);
+        localStorage.setItem("adminLog", JSON.stringify(logs));
+
+        closeLogin();
+        document.getElementById("todo-input").disabled = false;
+        document.getElementById("add-btn").disabled = false;
+        document.getElementById("notes").disabled = false;
+        document.getElementById("logout-btn").style.display = "inline";
+        fadeOut(document.getElementById("readonly-banner"));
+        refreshTasks();
+      } else {
+        document.getElementById("error").innerText = "❌ Wrong username or password!";
+      }
+    }
+
+    function logout() {
+      const currentUser = localStorage.getItem("currentUser") || "unknown";
+      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
+      logs.push(`${new Date().toLocaleString()}: User '${currentUser}' logged out.`);
+      localStorage.setItem("adminLog", JSON.stringify(logs));
+
+      editable = false;
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("role");
+
+      document.getElementById("todo-input").disabled = true;
+      document.getElementById("add-btn").disabled = true;
+      document.getElementById("notes").disabled = true;
+      document.getElementById("logout-btn").style.display = "none";
+      fadeIn(document.getElementById("readonly-banner"));
+      refreshTasks();
+    }
+
+    function dismissBanner() { fadeOut(document.getElementById("readonly-banner")); }
+    function fadeOut(el) { el.classList.add("hidden"); }
+    function fadeIn(el) { el.classList.remove("hidden"); }
+
+    function addTask() {
+      const input = document.getElementById("todo-input");
+      const taskText = input.value.trim();
+      if(taskText !== "") {
+        addTaskToDOM(taskText);
+        saveTasks();
+        input.value = "";
+      }
+    }
+
+    function addTaskToDOM(taskText) {
+      const li = document.createElement("li");
+      li.innerHTML = taskText + (editable ? " <button onclick='removeTask(this)'>X</button>" : "");
+      document.getElementById("todo-list").appendChild(li);
+    }
+
+    function removeTask(button) {
+      button.parentElement.remove();
+      saveTasks();
+    }
+
+    function saveTasks() {
+      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => li.innerText.replace("X","").trim());
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function refreshTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      document.getElementById("todo-list").innerHTML = "";
+      tasks.forEach(task => addTaskToDOM(task));
+    }
+
+    document.getElementById("notes").addEventListener("input", () => {
+      if(editable) localStorage.setItem("notes", document.getElementById("notes").value);
+    });
+  </script>
+</body>
+</html>

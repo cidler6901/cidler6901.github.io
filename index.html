@@ -126,7 +126,7 @@
       background: #333;
       color: white;
     }
-    /* Sticky warning bar with fade animation */
+    /* Sticky warning bar */
     #readonly-banner {
       position: fixed;
       top: 0;
@@ -153,9 +153,7 @@
       margin-left: 10px;
       cursor: pointer;
     }
-    body {
-      margin-top: 50px; /* space for sticky banner */
-    }
+    body { margin-top: 50px; }
     #logout-btn {
       display: none;
       margin-top: 1rem;
@@ -205,21 +203,15 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    #unlock-btn {
-      background: #4CAF50;
-      color: white;
-    }
-    #cancel-btn {
-      background: #e53935;
-      color: white;
-    }
+    #unlock-btn { background: #4CAF50; color: white; }
+    #cancel-btn { background: #e53935; color: white; }
   </style>
 </head>
 <body>
 
   <!-- Sticky Warning Bar -->
   <div id="readonly-banner">
-    🔒 Read-only mode – enter password to edit tasks & notes
+    🔒 Read-only mode – enter login to edit tasks & notes
     <button onclick="dismissBanner()">❌</button>
   </div>
 
@@ -234,6 +226,7 @@
     <a href="#">Projects</a>
     <a href="#">Dashboard</a>
     <a href="#">Contact</a>
+    <a href="log.html" id="log-link" style="display:none;">Admin Log</a>
     <button id="login-btn" onclick="showLogin()">Login</button>
   </nav>
 
@@ -246,7 +239,7 @@
       <h2>My Links</h2>
       <ul>
         <li><a href="https://aasa1234.my.canva.site/_password">My Website via canva</a></li>
-        <li><a href="https://ubg6.neocities.org/">UBG Home page via neoccitys (not updated )</a></li>
+        <li><a href="https://ubg6.neocities.org/">UBG Home page via neoccitys</a></li>
         <li><a href="cidler6901.github.io.ubg6">UBG Home page via Github</a></li>
         <li><a href="https://aasa1234.my.canva.site/unblockers/_password#home">UBG Home page via canva</a></li>
       </ul>
@@ -269,8 +262,8 @@
         <!-- Recent Activity -->
         <div class="widget">
           <h3>📰 Recent Activity</h3>
-          <p>• Makeing games</p>
-          <p>•  on the search for more people for my group</p>
+          <p>• Making games</p>
+          <p>• On the search for more people for my group</p>
           <p>• Made this website</p>
         </div>
         
@@ -279,11 +272,11 @@
           <h3>🎮 Favorite Games</h3>
           <ul>
             <li><a href="https://ubg6.neocities.org/games/Eaglecraft">Minecraft (Eaglecraft)</a></li>
-            <li> Minectaft ( java )</li>
+            <li>Minecraft (Java)</li>
             <li>BeamNG Drive</li>
-            <li>war thunder</li>
+            <li>War Thunder</li>
             <li>Xbox</li>
-            <li>Pc</li>
+            <li>PC</li>
           </ul>
         </div>
         
@@ -316,10 +309,11 @@
 
   <!-- Login Modal -->
   <div id="login-modal">
-    <h3>🔒 Enter Password to Edit</h3>
+    <h3>🔒 Login</h3>
+    <input type="text" id="username-input" placeholder="Username"><br><br>
     <input type="password" id="password-input" placeholder="Password">
     <div>
-      <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
+      <button id="unlock-btn" onclick="checkLogin()">Unlock</button>
       <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
     </div>
     <p id="error" style="color:red; margin-top:0.5rem;"></p>
@@ -328,11 +322,28 @@
   <script>
     let editable = false;
 
+    const users = {
+      "admin": "cidler6901",
+      "carson": "1234",
+      "guest": "guest"
+    };
+
+    function logEvent(msg) {
+      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
+      logs.push(new Date().toLocaleString() + " - " + msg);
+      localStorage.setItem("adminLog", JSON.stringify(logs));
+    }
+
     window.onload = () => {
       const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
       const savedNotes = localStorage.getItem("notes") || "";
       savedTasks.forEach(task => addTaskToDOM(task));
       document.getElementById("notes").value = savedNotes;
+
+      const role = localStorage.getItem("role");
+      if(role === "admin" || role === "user") {
+        enableEditing(role);
+      }
     };
 
     function showLogin() {
@@ -345,38 +356,52 @@
       document.getElementById("login-modal").style.display = "none";
       document.getElementById("error").innerText = "";
       document.getElementById("password-input").value = "";
+      document.getElementById("username-input").value = "";
     }
 
-    function checkPassword() {
-      const input = document.getElementById("password-input").value;
-      if(input === "cidler6901") {
-        editable = true;
+    function checkLogin() {
+      const user = document.getElementById("username-input").value;
+      const pass = document.getElementById("password-input").value;
+      if(users[user] && users[user] === pass) {
+        const role = (user === "admin") ? "admin" : "user";
+        localStorage.setItem("role", role);
+        enableEditing(role);
         closeLogin();
-        document.getElementById("todo-input").disabled = false;
-        document.getElementById("add-btn").disabled = false;
-        document.getElementById("notes").disabled = false;
-        document.getElementById("logout-btn").style.display = "inline";
-        fadeOut(document.getElementById("readonly-banner"));
-        refreshTasks();
+        logEvent("Login success: " + user);
       } else {
-        document.getElementById("error").innerText = "❌ Wrong password!";
+        document.getElementById("error").innerText = "❌ Wrong username or password!";
+        logEvent("Login failed: " + user);
       }
+    }
+
+    function enableEditing(role) {
+      editable = true;
+      document.getElementById("todo-input").disabled = false;
+      document.getElementById("add-btn").disabled = false;
+      document.getElementById("notes").disabled = false;
+      document.getElementById("logout-btn").style.display = "inline";
+      fadeOut(document.getElementById("readonly-banner"));
+
+      if(role === "admin") {
+        document.getElementById("log-link").style.display = "inline";
+      }
+      refreshTasks();
     }
 
     function logout() {
       editable = false;
+      localStorage.removeItem("role");
       document.getElementById("todo-input").disabled = true;
       document.getElementById("add-btn").disabled = true;
       document.getElementById("notes").disabled = true;
       document.getElementById("logout-btn").style.display = "none";
+      document.getElementById("log-link").style.display = "none";
       fadeIn(document.getElementById("readonly-banner"));
       refreshTasks();
+      logEvent("User logged out");
     }
 
-    function dismissBanner() {
-      fadeOut(document.getElementById("readonly-banner"));
-    }
-
+    function dismissBanner() { fadeOut(document.getElementById("readonly-banner")); }
     function fadeOut(el) { el.classList.add("hidden"); }
     function fadeIn(el) { el.classList.remove("hidden"); }
 

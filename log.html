@@ -78,7 +78,7 @@
     }
 
     function goBack() {
-      window.location.href = "index.html";
+      window.__cpLocation.href = "index.html";
     }
 
     // 🔒 Role check
@@ -86,7 +86,7 @@
       const role = localStorage.getItem("role");
       if(role !== "admin") {
         alert("⛔ Access denied. Admins only!");
-        window.location.href = "index.html";
+        window.__cpLocation.href = "index.html";
       } else {
         loadLog();
       }

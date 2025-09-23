@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #222; /* Darker background */
+      background: #1a1a1a;
       color: #fff;
     }
     header {
@@ -40,6 +40,15 @@
       border-radius:4px;
       cursor:pointer;
     }
+    #view-logs {
+      margin-left: 1rem;
+      padding:0.5rem 1rem;
+      background:#2196F3;
+      color:white;
+      border:none;
+      border-radius:4px;
+      cursor:pointer;
+    }
     .container {
       max-width: 1200px;
       margin: 2rem auto;
@@ -49,7 +58,7 @@
       padding: 0 1rem;
     }
     .profile, .dashboard {
-      background: #333; /* darker card background */
+      background: #2a2a2a;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -61,7 +70,8 @@
       display: block;
       margin: 0 auto 1rem;
     }
-    h2, h3 {
+    h2 {
+      margin-top: 1rem;
       color: #4CAF50;
     }
     .dashboard-grid {
@@ -70,10 +80,9 @@
       gap: 1rem;
     }
     .widget {
-      background: #444;
+      background: #3a3a3a;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
     .todo-input {
       display: flex;
@@ -82,8 +91,10 @@
     .todo-input input {
       flex: 1;
       padding: 0.5rem;
-      border: 1px solid #ccc;
       border-radius: 4px 0 0 4px;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
     }
     .todo-input button {
       padding: 0.5rem;
@@ -93,9 +104,7 @@
       cursor: pointer;
       border-radius: 0 4px 4px 0;
     }
-    .todo-input button:hover {
-      background: #45a049;
-    }
+    .todo-input button:hover { background: #45a049; }
     .todo-list li {
       margin: 0.3rem 0;
       display: flex;
@@ -113,10 +122,12 @@
     textarea {
       width: 100%;
       height: 100px;
-      border: 1px solid #ccc;
       border-radius: 6px;
+      border: 1px solid #555;
       padding: 0.5rem;
       resize: none;
+      background: #222;
+      color: #fff;
     }
     footer {
       text-align: center;
@@ -125,7 +136,6 @@
       background: #333;
       color: white;
     }
-    /* Sticky warning bar */
     #readonly-banner {
       position: fixed;
       top: 0;
@@ -140,80 +150,37 @@
       opacity: 1;
       transition: opacity 0.5s ease;
     }
-    #readonly-banner.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    #readonly-banner button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-    body {
-      margin-top: 50px; /* space for sticky banner */
-    }
-    #logout-btn, #view-log-btn {
-      display: none;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #logout-btn { background: #e53935; color:white; }
-    #view-log-btn { background: #2196F3; color:white; }
-    /* Login modal */
+    #readonly-banner.hidden { opacity: 0; pointer-events: none; }
+    #readonly-banner button { background: transparent; border: none; color: white; cursor:pointer; }
+    body { margin-top: 50px; }
+    #logout-btn { display:none; margin-top:1rem; padding:0.5rem 1rem; background:#e53935; color:white; border:none; border-radius:6px; cursor:pointer; }
     #login-modal-bg {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 10000;
-      cursor: pointer;
+      top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:10000; cursor:pointer;
     }
     #login-modal {
       display: none;
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top:50%; left:50%;
       transform: translate(-50%, -50%);
-      background: #222;
-      color: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      z-index: 10001;
-      width: 300px;
-      text-align: center;
+      background:#2a2a2a;
+      padding:2rem; border-radius:10px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.5);
+      z-index:10001; width:300px; text-align:center;
     }
     #login-modal input {
-      width: 80%;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      width: 80%; padding:0.5rem; border-radius:6px; border:1px solid #555; margin-bottom:0.5rem; background:#222; color:#fff;
     }
-    #login-modal button {
-      padding: 0.3rem 0.8rem;
-      margin: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #unlock-btn { background: #4CAF50; color:white; }
-    #cancel-btn { background: #e53935; color:white; }
+    #login-modal button { padding:0.3rem 0.8rem; margin:0.5rem; border:none; border-radius:4px; cursor:pointer; }
+    #unlock-btn { background:#4CAF50; color:white; }
+    #cancel-btn { background:#e53935; color:white; }
   </style>
 </head>
 <body>
 
-  <!-- Sticky Warning Bar -->
   <div id="readonly-banner">
-    🔒 Read-only mode – enter password to edit tasks & notes
+    🔒 Read-only mode – login to edit tasks & notes
     <button onclick="dismissBanner()">❌</button>
   </div>
 
@@ -229,28 +196,19 @@
     <a href="#">Dashboard</a>
     <a href="#">Contact</a>
     <button id="login-btn" onclick="showLogin()">Login</button>
+    <button id="view-logs" onclick="window.open('log.html', '_blank')">View Logs</button>
   </nav>
 
   <div class="container">
-    <!-- Profile Section -->
     <div class="profile">
-      <img id="profile-pic" src="" alt="Profile Picture" class="profile-pic">
+      <img src="carsonpic.jpeg" alt="Profile Picture" class="profile-pic">
       <h2>About Me</h2>
-      <p>Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself, my favorite projects, and useful links.</p>
-      <h2>My Links</h2>
-      <ul>
-        <li><a href="https://aasa1234.my.canva.site/_password">My Website via Canva</a></li>
-        <li><a href="https://ubg6.neocities.org/">UBG Home page via Neocities</a></li>
-        <li><a href="cidler6901.github.io.ubg6">UBG Home page via GitHub</a></li>
-        <li><a href="https://aasa1234.my.canva.site/unblockers/_password#home">UBG Home page via Canva</a></li>
-      </ul>
+      <p>Hi, I'm Carson Idler. This is my personal homepage.</p>
     </div>
 
-    <!-- Dashboard Section -->
     <div class="dashboard">
       <h2>My Dashboard</h2>
       <div class="dashboard-grid">
-        <!-- To-Do List -->
         <div class="widget">
           <h3>📅 To-Do List</h3>
           <ul class="todo-list" id="todo-list"></ul>
@@ -259,191 +217,118 @@
             <button onclick="addTask()" id="add-btn" disabled>Add</button>
           </div>
         </div>
-
-        <!-- Recent Activity -->
-        <div class="widget">
-          <h3>📰 Recent Activity</h3>
-          <p>• Making games</p>
-          <p>• On the search for more people for my group</p>
-          <p>• Made this website</p>
-        </div>
-        
-        <!-- Games -->
-        <div class="widget">
-          <h3>🎮 Favorite Games</h3>
-          <ul>
-            <li><a href="https://ubg6.neocities.org/games/Eaglecraft">Minecraft (Eaglecraft)</a></li>
-            <li>Minecraft (Java)</li>
-            <li>BeamNG Drive</li>
-            <li>War Thunder</li>
-            <li>Xbox</li>
-            <li>PC</li>
-          </ul>
-        </div>
-        
-        <!-- Notes -->
         <div class="widget">
           <h3>📝 Notes</h3>
           <textarea id="notes" disabled></textarea>
         </div>
-
-        <!-- Support Chat -->
-        <div class="widget">
-          <h3>💬 Support Chat</h3>
-          <iframe 
-            src="https://ubg6.chatango.com/" 
-            style="width:100%; height:400px; border:1px solid #ccc; border-radius:6px;" 
-            allowtransparency="true">
-          </iframe>
-        </div>
       </div>
-
-      <!-- Logout & Admin Log Button -->
       <button id="logout-btn" onclick="logout()">🔒 Logout</button>
-      <button id="view-log-btn" onclick="window.location.href='log.html'">📋 View Logs</button>
     </div>
   </div>
 
-  <footer>
-    <p>&copy; 2025 Carson Idler. All rights reserved.</p>
-  </footer>
+  <footer>&copy; 2025 Carson Idler</footer>
 
-  <!-- Login Background Overlay -->
   <div id="login-modal-bg" onclick="closeLogin()"></div>
-
-  <!-- Login Modal -->
   <div id="login-modal">
-    <h3>🔒 Enter Credentials</h3>
-    <input type="text" id="username-input" placeholder="Username"><br><br>
-    <input type="password" id="password-input" placeholder="Password">
-    <div>
-      <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
-      <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
-    </div>
+    <h3>🔒 Login</h3>
+    <input type="text" id="username-input" placeholder="Username"><br>
+    <input type="password" id="password-input" placeholder="Password"><br>
+    <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
+    <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
     <p id="error" style="color:red; margin-top:0.5rem;"></p>
   </div>
 
   <script>
     let editable = false;
-
-    // Set profile picture
-    const profilePicURL = "carsonpic.jpeg"; // <-- Place your image in the same folder
-    document.getElementById("profile-pic").src = profilePicURL;
-
-    // Users and roles
+    let currentUser = null;
     const users = {
-      "cidler6901": { password: "ci259026901", role: "admin" },
-      "tmiller1430": { password: "silvermiler1234", role: "user" }
+      "cidler6901": "ci259026901",
+      "tmiller1430": "silvermiler1234"
     };
+
+    function logAction(action) {
+      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
+      const timestamp = new Date().toLocaleString();
+      logs.push(`[${timestamp}] [${currentUser || "Unknown"}] ${action}`);
+      localStorage.setItem("adminLog", JSON.stringify(logs));
+    }
 
     window.onload = () => {
+      currentUser = localStorage.getItem("currentUser");
       const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      const savedNotes = localStorage.getItem("notes") || "";
       savedTasks.forEach(task => addTaskToDOM(task));
-      document.getElementById("notes").value = savedNotes;
+      document.getElementById("notes").value = localStorage.getItem("notes") || "";
+      logAction("Page loaded");
     };
 
-    function showLogin() {
-      document.getElementById("login-modal-bg").style.display = "block";
-      document.getElementById("login-modal").style.display = "block";
-    }
-
-    function closeLogin() {
-      document.getElementById("login-modal-bg").style.display = "none";
-      document.getElementById("login-modal").style.display = "none";
-      document.getElementById("error").innerText = "";
-      document.getElementById("username-input").value = "";
-      document.getElementById("password-input").value = "";
-    }
+    function showLogin() { document.getElementById("login-modal-bg").style.display="block"; document.getElementById("login-modal").style.display="block"; }
+    function closeLogin() { document.getElementById("login-modal-bg").style.display="none"; document.getElementById("login-modal").style.display="none"; document.getElementById("error").innerText=""; document.getElementById("username-input").value=""; document.getElementById("password-input").value=""; }
 
     function checkPassword() {
       const username = document.getElementById("username-input").value;
       const password = document.getElementById("password-input").value;
-
-      if(users[username] && users[username].password === password) {
+      if(users[username] && users[username] === password){
         editable = true;
-        localStorage.setItem("currentUser", username);
-        localStorage.setItem("role", users[username].role);
+        currentUser = username;
+        localStorage.setItem("currentUser", currentUser);
         closeLogin();
-        document.getElementById("todo-input").disabled = false;
-        document.getElementById("add-btn").disabled = false;
-        document.getElementById("notes").disabled = false;
-        document.getElementById("logout-btn").style.display = "inline";
-        
-        // Show admin log button if admin
-        if(users[username].role === "admin") {
-          document.getElementById("view-log-btn").style.display = "inline-block";
-        }
-
+        document.getElementById("todo-input").disabled=false;
+        document.getElementById("add-btn").disabled=false;
+        document.getElementById("notes").disabled=false;
+        document.getElementById("logout-btn").style.display="inline";
         fadeOut(document.getElementById("readonly-banner"));
-        logAction(username, "logged in");
         refreshTasks();
-      } else {
-        document.getElementById("error").innerText = "❌ Wrong credentials!";
-      }
+        logAction("Unlocked dashboard");
+      } else { document.getElementById("error").innerText="❌ Wrong credentials!"; logAction(`Failed login attempt: ${username}`); }
     }
 
     function logout() {
-      const currentUser = localStorage.getItem("currentUser") || "unknown";
-      logAction(currentUser, "logged out");
-
-      editable = false;
+      logAction("Logged out");
+      editable=false; currentUser=null;
       localStorage.removeItem("currentUser");
-      localStorage.removeItem("role");
-
-      document.getElementById("todo-input").disabled = true;
-      document.getElementById("add-btn").disabled = true;
-      document.getElementById("notes").disabled = true;
-      document.getElementById("logout-btn").style.display = "none";
-      document.getElementById("view-log-btn").style.display = "none";
+      document.getElementById("todo-input").disabled=true;
+      document.getElementById("add-btn").disabled=true;
+      document.getElementById("notes").disabled=true;
+      document.getElementById("logout-btn").style.display="none";
       fadeIn(document.getElementById("readonly-banner"));
-      refreshTasks();
     }
 
-    function logAction(user, action) {
-      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
-      logs.push(`${new Date().toLocaleString()}: User '${user}' ${action}`);
-      localStorage.setItem("adminLog", JSON.stringify(logs));
+    function dismissBanner(){fadeOut(document.getElementById("readonly-banner"));}
+    function fadeOut(el){el.classList.add("hidden");}
+    function fadeIn(el){el.classList.remove("hidden");}
+
+    function addTask(){
+      const input=document.getElementById("todo-input"); 
+      const text=input.value.trim();
+      if(text!==""){addTaskToDOM(text); saveTasks(); input.value=""; logAction(`Added task: "${text}"`);}
     }
 
-    function dismissBanner() { fadeOut(document.getElementById("readonly-banner")); }
-    function fadeOut(el) { el.classList.add("hidden"); }
-    function fadeIn(el) { el.classList.remove("hidden"); }
-
-    function addTask() {
-      const input = document.getElementById("todo-input");
-      const taskText = input.value.trim();
-      if(taskText !== "") {
-        addTaskToDOM(taskText);
-        saveTasks();
-        input.value = "";
-      }
-    }
-
-    function addTaskToDOM(taskText) {
-      const li = document.createElement("li");
-      li.innerHTML = taskText + (editable ? " <button onclick='removeTask(this)'>X</button>" : "");
+    function addTaskToDOM(text){
+      const li=document.createElement("li");
+      li.innerHTML=text+(editable?` <button onclick='removeTask(this)'>X</button>`:"");
       document.getElementById("todo-list").appendChild(li);
     }
 
-    function removeTask(button) {
+    function removeTask(button){
+      const text=button.parentElement.innerText.replace("X","").trim();
       button.parentElement.remove();
       saveTasks();
+      logAction(`Removed task: "${text}"`);
     }
 
-    function saveTasks() {
-      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => li.innerText.replace("X","").trim());
+    function saveTasks(){
+      const tasks=Array.from(document.querySelectorAll("#todo-list li")).map(li=>li.innerText.replace("X","").trim());
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    function refreshTasks() {
-      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      document.getElementById("todo-list").innerHTML = "";
-      tasks.forEach(task => addTaskToDOM(task));
+    function refreshTasks(){
+      const tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+      document.getElementById("todo-list").innerHTML="";
+      tasks.forEach(task=>addTaskToDOM(task));
     }
 
-    document.getElementById("notes").addEventListener("input", () => {
-      if(editable) localStorage.setItem("notes", document.getElementById("notes").value);
+    document.getElementById("notes").addEventListener("input",()=>{
+      if(editable){localStorage.setItem("notes",document.getElementById("notes").value); logAction("Updated notes");}
     });
   </script>
 </body>

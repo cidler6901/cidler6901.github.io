@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #1b1b1b; /* darker background */
+      background: #222; /* Darker background */
       color: #fff;
     }
     header {
@@ -49,8 +49,7 @@
       padding: 0 1rem;
     }
     .profile, .dashboard {
-      background: #2b2b2b;
-      color: #fff;
+      background: #333; /* darker card background */
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -62,8 +61,7 @@
       display: block;
       margin: 0 auto 1rem;
     }
-    h2 {
-      margin-top: 1rem;
+    h2, h3 {
       color: #4CAF50;
     }
     .dashboard-grid {
@@ -72,10 +70,10 @@
       gap: 1rem;
     }
     .widget {
-      background: #3b3b3b;
+      background: #444;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }
     .todo-input {
       display: flex;
@@ -127,6 +125,7 @@
       background: #333;
       color: white;
     }
+    /* Sticky warning bar */
     #readonly-banner {
       position: fixed;
       top: 0;
@@ -141,7 +140,10 @@
       opacity: 1;
       transition: opacity 0.5s ease;
     }
-    #readonly-banner.hidden { opacity:0; pointer-events:none; }
+    #readonly-banner.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
     #readonly-banner button {
       background: transparent;
       border: none;
@@ -150,17 +152,20 @@
       margin-left: 10px;
       cursor: pointer;
     }
-    body { margin-top: 50px; }
-    #logout-btn {
+    body {
+      margin-top: 50px; /* space for sticky banner */
+    }
+    #logout-btn, #view-log-btn {
       display: none;
       margin-top: 1rem;
       padding: 0.5rem 1rem;
-      background: #e53935;
-      color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
     }
+    #logout-btn { background: #e53935; color:white; }
+    #view-log-btn { background: #2196F3; color:white; }
+    /* Login modal */
     #login-modal-bg {
       display: none;
       position: fixed;
@@ -178,11 +183,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #2b2b2b;
+      background: #222;
       color: #fff;
       padding: 2rem;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       z-index: 10001;
       width: 300px;
       text-align: center;
@@ -192,7 +197,6 @@
       padding: 0.5rem;
       border-radius: 6px;
       border: 1px solid #ccc;
-      margin: 0.3rem 0;
     }
     #login-modal button {
       padding: 0.3rem 0.8rem;
@@ -207,6 +211,7 @@
 </head>
 <body>
 
+  <!-- Sticky Warning Bar -->
   <div id="readonly-banner">
     🔒 Read-only mode – enter password to edit tasks & notes
     <button onclick="dismissBanner()">❌</button>
@@ -227,15 +232,25 @@
   </nav>
 
   <div class="container">
+    <!-- Profile Section -->
     <div class="profile">
-      <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
+      <img id="profile-pic" src="" alt="Profile Picture" class="profile-pic">
       <h2>About Me</h2>
       <p>Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself, my favorite projects, and useful links.</p>
+      <h2>My Links</h2>
+      <ul>
+        <li><a href="https://aasa1234.my.canva.site/_password">My Website via Canva</a></li>
+        <li><a href="https://ubg6.neocities.org/">UBG Home page via Neocities</a></li>
+        <li><a href="cidler6901.github.io.ubg6">UBG Home page via GitHub</a></li>
+        <li><a href="https://aasa1234.my.canva.site/unblockers/_password#home">UBG Home page via Canva</a></li>
+      </ul>
     </div>
 
+    <!-- Dashboard Section -->
     <div class="dashboard">
       <h2>My Dashboard</h2>
       <div class="dashboard-grid">
+        <!-- To-Do List -->
         <div class="widget">
           <h3>📅 To-Do List</h3>
           <ul class="todo-list" id="todo-list"></ul>
@@ -245,12 +260,47 @@
           </div>
         </div>
 
+        <!-- Recent Activity -->
+        <div class="widget">
+          <h3>📰 Recent Activity</h3>
+          <p>• Making games</p>
+          <p>• On the search for more people for my group</p>
+          <p>• Made this website</p>
+        </div>
+        
+        <!-- Games -->
+        <div class="widget">
+          <h3>🎮 Favorite Games</h3>
+          <ul>
+            <li><a href="https://ubg6.neocities.org/games/Eaglecraft">Minecraft (Eaglecraft)</a></li>
+            <li>Minecraft (Java)</li>
+            <li>BeamNG Drive</li>
+            <li>War Thunder</li>
+            <li>Xbox</li>
+            <li>PC</li>
+          </ul>
+        </div>
+        
+        <!-- Notes -->
         <div class="widget">
           <h3>📝 Notes</h3>
           <textarea id="notes" disabled></textarea>
         </div>
+
+        <!-- Support Chat -->
+        <div class="widget">
+          <h3>💬 Support Chat</h3>
+          <iframe 
+            src="https://ubg6.chatango.com/" 
+            style="width:100%; height:400px; border:1px solid #ccc; border-radius:6px;" 
+            allowtransparency="true">
+          </iframe>
+        </div>
       </div>
+
+      <!-- Logout & Admin Log Button -->
       <button id="logout-btn" onclick="logout()">🔒 Logout</button>
+      <button id="view-log-btn" onclick="window.location.href='log.html'">📋 View Logs</button>
     </div>
   </div>
 
@@ -258,11 +308,13 @@
     <p>&copy; 2025 Carson Idler. All rights reserved.</p>
   </footer>
 
+  <!-- Login Background Overlay -->
   <div id="login-modal-bg" onclick="closeLogin()"></div>
 
+  <!-- Login Modal -->
   <div id="login-modal">
-    <h3>🔒 Login</h3>
-    <input type="text" id="username-input" placeholder="Username">
+    <h3>🔒 Enter Credentials</h3>
+    <input type="text" id="username-input" placeholder="Username"><br><br>
     <input type="password" id="password-input" placeholder="Password">
     <div>
       <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
@@ -273,6 +325,16 @@
 
   <script>
     let editable = false;
+
+    // Set profile picture
+    const profilePicURL = "carsonpic.jpeg"; // <-- Place your image in the same folder
+    document.getElementById("profile-pic").src = profilePicURL;
+
+    // Users and roles
+    const users = {
+      "cidler6901": { password: "ci259026901", role: "admin" },
+      "tmiller1430": { password: "silvermiler1234", role: "user" }
+    };
 
     window.onload = () => {
       const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -295,40 +357,35 @@
     }
 
     function checkPassword() {
-      const username = document.getElementById("username-input").value.trim();
+      const username = document.getElementById("username-input").value;
       const password = document.getElementById("password-input").value;
 
-      const users = {
-        "cidler6901": "ci259026901",
-        "tmiller1430": "silvermiler1234"
-      };
-
-      if(users[username] && users[username] === password) {
+      if(users[username] && users[username].password === password) {
         editable = true;
         localStorage.setItem("currentUser", username);
-        localStorage.setItem("role", username === "cidler6901" ? "admin" : "user");
-
-        const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
-        logs.push(`${new Date().toLocaleString()}: User '${username}' logged in.`);
-        localStorage.setItem("adminLog", JSON.stringify(logs));
-
+        localStorage.setItem("role", users[username].role);
         closeLogin();
         document.getElementById("todo-input").disabled = false;
         document.getElementById("add-btn").disabled = false;
         document.getElementById("notes").disabled = false;
         document.getElementById("logout-btn").style.display = "inline";
+        
+        // Show admin log button if admin
+        if(users[username].role === "admin") {
+          document.getElementById("view-log-btn").style.display = "inline-block";
+        }
+
         fadeOut(document.getElementById("readonly-banner"));
+        logAction(username, "logged in");
         refreshTasks();
       } else {
-        document.getElementById("error").innerText = "❌ Wrong username or password!";
+        document.getElementById("error").innerText = "❌ Wrong credentials!";
       }
     }
 
     function logout() {
       const currentUser = localStorage.getItem("currentUser") || "unknown";
-      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
-      logs.push(`${new Date().toLocaleString()}: User '${currentUser}' logged out.`);
-      localStorage.setItem("adminLog", JSON.stringify(logs));
+      logAction(currentUser, "logged out");
 
       editable = false;
       localStorage.removeItem("currentUser");
@@ -338,8 +395,15 @@
       document.getElementById("add-btn").disabled = true;
       document.getElementById("notes").disabled = true;
       document.getElementById("logout-btn").style.display = "none";
+      document.getElementById("view-log-btn").style.display = "none";
       fadeIn(document.getElementById("readonly-banner"));
       refreshTasks();
+    }
+
+    function logAction(user, action) {
+      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
+      logs.push(`${new Date().toLocaleString()}: User '${user}' ${action}`);
+      localStorage.setItem("adminLog", JSON.stringify(logs));
     }
 
     function dismissBanner() { fadeOut(document.getElementById("readonly-banner")); }

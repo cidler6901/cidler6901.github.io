@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User's Home Page & Dashboard</title>
+  <title>Carson's home page/title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -113,3 +113,267 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #lock-screen input {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      margin-top: 0.5rem;
+    }
+    #lock-screen button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+      background: #333;
+      color: white;
+    }
+    /* Sticky warning bar with fade animation */
+    #readonly-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #ff9800;
+      color: white;
+      text-align: center;
+      padding: 0.8rem;
+      font-weight: bold;
+      z-index: 10000;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    #readonly-banner.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #readonly-banner button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    body {
+      margin-top: 50px; /* space for sticky banner */
+    }
+    #logout-btn {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Warning Bar -->
+  <div id="readonly-banner">
+    🔒 Read-only mode – enter password to edit tasks & notes
+    <button id="close-banner" onclick="dismissBanner()">❌</button>
+  </div>
+
+  <header>
+    <h1>Welcome to My Home Page</h1>
+    <p>Hello, I'm [Your Name] 👋</p>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Projects</a>
+    <a href="#">Dashboard</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <div class="container">
+    <!-- Profile Section -->
+    <div class="profile">
+      <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
+      <h2>About Me</h2>
+      <p>
+        Hi, I'm [Your Name]. This is my personal homepage where I share a little about myself,
+        my favorite projects, and useful links.
+      </p>
+
+      <h2>My Links</h2>
+      <ul>
+        <li><a href="https://example.com">My Website</a></li>
+        <li><a href="https://github.com/">GitHub</a></li>
+        <li><a href="https://twitter.com/">Twitter</a></li>
+      </ul>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard">
+      <h2>My Dashboard</h2>
+      <div class="dashboard-grid">
+        
+        <!-- To-Do List -->
+        <div class="widget">
+          <h3>📅 To-Do List</h3>
+          <ul class="todo-list" id="todo-list"></ul>
+          <div class="todo-input">
+            <input type="text" id="todo-input" placeholder="New task..." disabled>
+            <button onclick="addTask()" id="add-btn" disabled>Add</button>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="widget">
+          <h3>📰 Recent Activity</h3>
+          <p>• Posted a new blog update</p>
+          <p>• Pushed code to GitHub</p>
+          <p>• Played Eaglecraft</p>
+        </div>
+
+        <!-- Games -->
+        <div class="widget">
+          <h3>🎮 Favorite Games</h3>
+          <ul>
+            <li><a href="https://ubg6.neocities.org/games/Eaglecraft">Minecraft (Eaglecraft)</a></li>
+            <li><a href="http://ubg6.cidler6901.workers.dev/">US4</a></li>
+            <li><a href="http://ubg1.cidler6901.workers.dev/">US5</a></li>
+          </ul>
+        </div>
+
+        <!-- Notes -->
+        <div class="widget">
+          <h3>📝 Notes</h3>
+          <textarea id="notes" disabled></textarea>
+        </div>
+      </div>
+      <button id="logout-btn" onclick="logout()">🔒 Logout</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Your Name. All rights reserved.</p>
+  </footer>
+
+  <!-- Lock Screen -->
+  <div id="lock-screen">
+    <h2>🔒 Enter Password to Edit</h2>
+    <input type="password" id="password-input" placeholder="Password">
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="error" style="color: red;"></p>
+  </div>
+
+  <script>
+    let editable = false;
+
+    // Load saved data
+    window.onload = () => {
+      const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      const savedNotes = localStorage.getItem("notes") || "";
+      savedTasks.forEach(task => addTaskToDOM(task));
+      document.getElementById("notes").value = savedNotes;
+    };
+
+    // Check password
+    function checkPassword() {
+      const input = document.getElementById("password-input").value;
+      if (input === "cidler6901") {
+        editable = true;
+        document.getElementById("lock-screen").style.display = "none";
+        document.getElementById("todo-input").disabled = false;
+        document.getElementById("add-btn").disabled = false;
+        document.getElementById("notes").disabled = false;
+        document.getElementById("logout-btn").style.display = "inline";
+        fadeOut(document.getElementById("readonly-banner"));
+        refreshTasks();
+      } else {
+        document.getElementById("error").innerText = "❌ Wrong password!";
+      }
+    }
+
+    // Logout
+    function logout() {
+      editable = false;
+      document.getElementById("todo-input").disabled = true;
+      document.getElementById("add-btn").disabled = true;
+      document.getElementById("notes").disabled = true;
+      document.getElementById("logout-btn").style.display = "none";
+      document.getElementById("lock-screen").style.display = "flex";
+      fadeIn(document.getElementById("readonly-banner"));
+      refreshTasks();
+    }
+
+    // Dismiss the banner manually
+    function dismissBanner() {
+      fadeOut(document.getElementById("readonly-banner"));
+    }
+
+    // Smooth fade helpers
+    function fadeOut(el) {
+      el.classList.add("hidden");
+    }
+    function fadeIn(el) {
+      el.classList.remove("hidden");
+    }
+
+    // Add task
+    function addTask() {
+      const input = document.getElementById("todo-input");
+      const taskText = input.value.trim();
+      if (taskText !== "") {
+        addTaskToDOM(taskText);
+        saveTasks();
+        input.value = "";
+      }
+    }
+
+    function addTaskToDOM(taskText) {
+      const li = document.createElement("li");
+      li.innerHTML = taskText + (editable ? " <button onclick='removeTask(this)'>X</button>" : "");
+      document.getElementById("todo-list").appendChild(li);
+    }
+
+    // Remove task
+    function removeTask(button) {
+      button.parentElement.remove();
+      saveTasks();
+    }
+
+    // Save tasks
+    function saveTasks() {
+      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => li.innerText.replace("X", "").trim());
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    // Refresh tasks so they show correct edit buttons
+    function refreshTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      document.getElementById("todo-list").innerHTML = "";
+      tasks.forEach(task => addTaskToDOM(task));
+    }
+
+    // Save notes automatically
+    document.getElementById("notes").addEventListener("input", () => {
+      if (editable) {
+        localStorage.setItem("notes", document.getElementById("notes").value);
+      }
+    });
+  </script>
+</body>
+</html>

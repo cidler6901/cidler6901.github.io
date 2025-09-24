@@ -8,8 +8,8 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #1a1a1a;
-      color: #fff;
+      background: #1e1e1e;
+      color: #ddd;
     }
     header {
       background: #4CAF50;
@@ -33,21 +33,12 @@
     }
     #login-btn {
       margin-left: auto;
-      padding:0.5rem 1rem;
-      background:#4CAF50;
-      color:white;
-      border:none;
-      border-radius:4px;
-      cursor:pointer;
-    }
-    #view-logs {
-      margin-left: 1rem;
-      padding:0.5rem 1rem;
-      background:#2196F3;
-      color:white;
-      border:none;
-      border-radius:4px;
-      cursor:pointer;
+      padding: 0.5rem 1rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
     .container {
       max-width: 1200px;
@@ -58,10 +49,10 @@
       padding: 0 1rem;
     }
     .profile, .dashboard {
-      background: #2a2a2a;
+      background: #2b2b2b;
       padding: 2rem;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
     .profile-pic {
       width: 150px;
@@ -80,9 +71,10 @@
       gap: 1rem;
     }
     .widget {
-      background: #3a3a3a;
+      background: #3b3b3b;
       padding: 1rem;
       border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
     .todo-input {
       display: flex;
@@ -91,10 +83,10 @@
     .todo-input input {
       flex: 1;
       padding: 0.5rem;
-      border-radius: 4px 0 0 4px;
       border: 1px solid #555;
-      background: #222;
-      color: #fff;
+      background: #1e1e1e;
+      color: #ddd;
+      border-radius: 4px 0 0 4px;
     }
     .todo-input button {
       padding: 0.5rem;
@@ -104,7 +96,9 @@
       cursor: pointer;
       border-radius: 0 4px 4px 0;
     }
-    .todo-input button:hover { background: #45a049; }
+    .todo-input button:hover {
+      background: #45a049;
+    }
     .todo-list li {
       margin: 0.3rem 0;
       display: flex;
@@ -122,12 +116,12 @@
     textarea {
       width: 100%;
       height: 100px;
-      border-radius: 6px;
       border: 1px solid #555;
+      background: #1e1e1e;
+      color: #ddd;
+      border-radius: 6px;
       padding: 0.5rem;
       resize: none;
-      background: #222;
-      color: #fff;
     }
     footer {
       text-align: center;
@@ -147,46 +141,67 @@
       padding: 0.8rem;
       font-weight: bold;
       z-index: 10000;
-      opacity: 1;
       transition: opacity 0.5s ease;
     }
-    #readonly-banner.hidden { opacity: 0; pointer-events: none; }
-    #readonly-banner button { background: transparent; border: none; color: white; cursor:pointer; }
-    body { margin-top: 50px; }
-    #logout-btn { display:none; margin-top:1rem; padding:0.5rem 1rem; background:#e53935; color:white; border:none; border-radius:6px; cursor:pointer; }
+    #readonly-banner.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #logout-btn, #log-btn {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #e53935;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #log-btn {
+      background: #1976d2;
+    }
     #login-modal-bg {
       display: none;
       position: fixed;
-      top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:10000; cursor:pointer;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
     }
     #login-modal {
       display: none;
       position: fixed;
-      top:50%; left:50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      background:#2a2a2a;
-      padding:2rem; border-radius:10px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.5);
-      z-index:10001; width:300px; text-align:center;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      color: black;
+      z-index: 10001;
     }
     #login-modal input {
-      width: 80%; padding:0.5rem; border-radius:6px; border:1px solid #555; margin-bottom:0.5rem; background:#222; color:#fff;
+      width: 80%;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
-    #login-modal button { padding:0.3rem 0.8rem; margin:0.5rem; border:none; border-radius:4px; cursor:pointer; }
-    #unlock-btn { background:#4CAF50; color:white; }
-    #cancel-btn { background:#e53935; color:white; }
   </style>
 </head>
 <body>
 
   <div id="readonly-banner">
     🔒 Read-only mode – login to edit tasks & notes
-    <button onclick="dismissBanner()">❌</button>
   </div>
 
   <header>
     <h1>Welcome to Carson Idler's Home Page</h1>
-    <p>Hello, I'm Carson Idler 👋</p>
+    <p>Hello, <span id="greeting-user">Guest</span> 👋</p>
   </header>
 
   <nav>
@@ -196,14 +211,13 @@
     <a href="#">Dashboard</a>
     <a href="#">Contact</a>
     <button id="login-btn" onclick="showLogin()">Login</button>
-    <button id="view-logs" onclick="window.open('log.html', '_blank')">View Logs</button>
   </nav>
 
   <div class="container">
     <div class="profile">
       <img src="carsonpic.jpeg" alt="Profile Picture" class="profile-pic">
       <h2>About Me</h2>
-      <p>Hi, I'm Carson Idler. This is my personal homepage.</p>
+      <p>Hi, I'm Carson Idler. This is my personal homepage where I share a little about myself, my favorite projects, and useful links.</p>
     </div>
 
     <div class="dashboard">
@@ -221,115 +235,154 @@
           <h3>📝 Notes</h3>
           <textarea id="notes" disabled></textarea>
         </div>
+        <div class="widget">
+          <h3>💬 Support Chat</h3>
+          <iframe src="https://ubg6.chatango.com/" style="width:100%; height:300px; border:1px solid #ccc; border-radius:6px;"></iframe>
+        </div>
       </div>
       <button id="logout-btn" onclick="logout()">🔒 Logout</button>
+      <button id="log-btn" onclick="window.open('log.html','_blank')">📜 View Logs</button>
     </div>
   </div>
 
-  <footer>&copy; 2025 Carson Idler</footer>
+  <footer>
+    <p>&copy; 2025 Carson Idler. All rights reserved.</p>
+  </footer>
 
   <div id="login-modal-bg" onclick="closeLogin()"></div>
   <div id="login-modal">
     <h3>🔒 Login</h3>
-    <input type="text" id="username-input" placeholder="Username"><br>
-    <input type="password" id="password-input" placeholder="Password"><br>
-    <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
-    <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
-    <p id="error" style="color:red; margin-top:0.5rem;"></p>
+    <input type="text" id="username-input" placeholder="Username">
+    <input type="password" id="password-input" placeholder="Password">
+    <div>
+      <button onclick="checkLogin()">Login</button>
+      <button onclick="closeLogin()">Cancel</button>
+    </div>
+    <p id="error" style="color:red;"></p>
   </div>
 
   <script>
     let editable = false;
-    let currentUser = null;
-    const users = {
-      "cidler6901": "ci259026901",
-      "tmiller1430": "silvermiler1234"
-    };
+    let currentUser = "Guest";
+    let isAdmin = false;
 
-    function logAction(action) {
-      const logs = JSON.parse(localStorage.getItem("adminLog")) || [];
-      const timestamp = new Date().toLocaleString();
-      logs.push(`[${timestamp}] [${currentUser || "Unknown"}] ${action}`);
-      localStorage.setItem("adminLog", JSON.stringify(logs));
-    }
+    const users = {
+      "cidler6901": "ci259026901",  // admin
+      "tmiller1430": "silvermiler1234" // regular user
+    };
 
     window.onload = () => {
-      currentUser = localStorage.getItem("currentUser");
       const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      savedTasks.forEach(task => addTaskToDOM(task));
-      document.getElementById("notes").value = localStorage.getItem("notes") || "";
-      logAction("Page loaded");
+      const savedNotes = localStorage.getItem("notes") || "";
+      savedTasks.forEach(task => addTaskToDOM(task.text, task.user));
+      document.getElementById("notes").value = savedNotes;
     };
 
-    function showLogin() { document.getElementById("login-modal-bg").style.display="block"; document.getElementById("login-modal").style.display="block"; }
-    function closeLogin() { document.getElementById("login-modal-bg").style.display="none"; document.getElementById("login-modal").style.display="none"; document.getElementById("error").innerText=""; document.getElementById("username-input").value=""; document.getElementById("password-input").value=""; }
+    function showLogin() {
+      document.getElementById("login-modal-bg").style.display = "block";
+      document.getElementById("login-modal").style.display = "block";
+    }
 
-    function checkPassword() {
-      const username = document.getElementById("username-input").value;
-      const password = document.getElementById("password-input").value;
-      if(users[username] && users[username] === password){
+    function closeLogin() {
+      document.getElementById("login-modal-bg").style.display = "none";
+      document.getElementById("login-modal").style.display = "none";
+      document.getElementById("error").innerText = "";
+      document.getElementById("username-input").value = "";
+      document.getElementById("password-input").value = "";
+    }
+
+    function checkLogin() {
+      const user = document.getElementById("username-input").value;
+      const pass = document.getElementById("password-input").value;
+      if(users[user] && users[user] === pass) {
+        currentUser = user;
+        isAdmin = (user === "cidler6901");
         editable = true;
-        currentUser = username;
-        localStorage.setItem("currentUser", currentUser);
         closeLogin();
-        document.getElementById("todo-input").disabled=false;
-        document.getElementById("add-btn").disabled=false;
-        document.getElementById("notes").disabled=false;
-        document.getElementById("logout-btn").style.display="inline";
+        document.getElementById("greeting-user").innerText = currentUser;
+        document.getElementById("todo-input").disabled = false;
+        document.getElementById("add-btn").disabled = false;
+        document.getElementById("notes").disabled = false;
+        document.getElementById("logout-btn").style.display = "inline";
+        if(isAdmin) document.getElementById("log-btn").style.display = "inline";
         fadeOut(document.getElementById("readonly-banner"));
         refreshTasks();
-        logAction("Unlocked dashboard");
-      } else { document.getElementById("error").innerText="❌ Wrong credentials!"; logAction(`Failed login attempt: ${username}`); }
+        logAction(`User ${currentUser} logged in`);
+      } else {
+        document.getElementById("error").innerText = "❌ Wrong username or password!";
+      }
     }
 
     function logout() {
-      logAction("Logged out");
-      editable=false; currentUser=null;
-      localStorage.removeItem("currentUser");
-      document.getElementById("todo-input").disabled=true;
-      document.getElementById("add-btn").disabled=true;
-      document.getElementById("notes").disabled=true;
-      document.getElementById("logout-btn").style.display="none";
+      logAction(`User ${currentUser} logged out`);
+      editable = false;
+      currentUser = "Guest";
+      isAdmin = false;
+      document.getElementById("greeting-user").innerText = currentUser;
+      document.getElementById("todo-input").disabled = true;
+      document.getElementById("add-btn").disabled = true;
+      document.getElementById("notes").disabled = true;
+      document.getElementById("logout-btn").style.display = "none";
+      document.getElementById("log-btn").style.display = "none";
       fadeIn(document.getElementById("readonly-banner"));
+      refreshTasks();
     }
 
-    function dismissBanner(){fadeOut(document.getElementById("readonly-banner"));}
-    function fadeOut(el){el.classList.add("hidden");}
-    function fadeIn(el){el.classList.remove("hidden");}
+    function fadeOut(el) { el.classList.add("hidden"); }
+    function fadeIn(el) { el.classList.remove("hidden"); }
 
-    function addTask(){
-      const input=document.getElementById("todo-input"); 
-      const text=input.value.trim();
-      if(text!==""){addTaskToDOM(text); saveTasks(); input.value=""; logAction(`Added task: "${text}"`);}
+    function addTask() {
+      const input = document.getElementById("todo-input");
+      const taskText = input.value.trim();
+      if(taskText !== "") {
+        addTaskToDOM(taskText, currentUser);
+        saveTasks();
+        input.value = "";
+        logAction(`Added task: "${taskText}" by ${currentUser}`);
+      }
     }
 
-    function addTaskToDOM(text){
-      const li=document.createElement("li");
-      li.innerHTML=text+(editable?` <button onclick='removeTask(this)'>X</button>`:"");
+    function addTaskToDOM(taskText, user = null) {
+      const li = document.createElement("li");
+      li.innerHTML = taskText + (user ? ` <span style="color:#aaa; font-size:0.8em;">(${user})</span>` : "") +
+        (editable ? " <button onclick='removeTask(this)'>X</button>" : "");
       document.getElementById("todo-list").appendChild(li);
     }
 
-    function removeTask(button){
-      const text=button.parentElement.innerText.replace("X","").trim();
+    function removeTask(button) {
+      const text = button.parentElement.innerText.replace("X","").trim();
       button.parentElement.remove();
       saveTasks();
-      logAction(`Removed task: "${text}"`);
+      logAction(`Removed task: "${text}" by ${currentUser}`);
     }
 
-    function saveTasks(){
-      const tasks=Array.from(document.querySelectorAll("#todo-list li")).map(li=>li.innerText.replace("X","").trim());
+    function saveTasks() {
+      const tasks = Array.from(document.querySelectorAll("#todo-list li")).map(li => {
+        const text = li.childNodes[0].textContent.trim();
+        const userSpan = li.querySelector("span");
+        return { text: text, user: userSpan ? userSpan.textContent.replace(/[()]/g,"") : "" };
+      });
       localStorage.setItem("tasks", JSON.stringify(tasks));
     }
 
-    function refreshTasks(){
-      const tasks=JSON.parse(localStorage.getItem("tasks"))||[];
-      document.getElementById("todo-list").innerHTML="";
-      tasks.forEach(task=>addTaskToDOM(task));
+    function refreshTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      document.getElementById("todo-list").innerHTML = "";
+      tasks.forEach(task => addTaskToDOM(task.text, task.user));
     }
 
-    document.getElementById("notes").addEventListener("input",()=>{
-      if(editable){localStorage.setItem("notes",document.getElementById("notes").value); logAction("Updated notes");}
+    document.getElementById("notes").addEventListener("input", () => {
+      if(editable) {
+        localStorage.setItem("notes", document.getElementById("notes").value);
+        logAction(`Updated notes by ${currentUser}`);
+      }
     });
+
+    function logAction(action) {
+      let logs = JSON.parse(localStorage.getItem("logs")) || [];
+      logs.push({ action: action, time: new Date().toLocaleString() });
+      localStorage.setItem("logs", JSON.stringify(logs));
+    }
   </script>
 </body>
 </html>

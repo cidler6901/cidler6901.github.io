@@ -1,72 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin Log</title>
-<style>
-  body{font-family:Arial,sans-serif;background:#1a1a1a;color:#fff;padding:1rem;}
-  h1{text-align:center;color:#4CAF50;}
-  #log-list{list-style:none;padding:0;max-width:800px;margin:1rem auto;overflow-y:auto;max-height:500px;border:1px solid #555;border-radius:6px;padding:1rem;background:#222;}
-  #log-list li{margin:0.5rem 0;padding:0.3rem;border-bottom:1px solid #555;}
-  #login-modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:10000;cursor:pointer;}
-  #login-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#2a2a2a;padding:2rem;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.5);z-index:10001;width:300px;text-align:center;}
-  #login-modal input{width:80%;padding:0.5rem;border-radius:6px;border:1px solid #555;margin-bottom:0.5rem;background:#222;color:#fff;}
-  #login-modal button{padding:0.3rem 0.8rem;margin:0.5rem;border:none;border-radius:4px;cursor:pointer;}
-  #unlock-btn{background:#4CAF50;color:white;}
-  #cancel-btn{background:#e53935;color:white;}
-</style>
+  <meta charset="UTF-8">
+  <title>Admin Logs</title>
+  <style>
+    body {
+      background: #1e1e1e;
+      color: #ddd;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #555;
+      text-align: left;
+    }
+    th {
+      background: #333;
+    }
+    tr:nth-child(even) {
+      background: #2b2b2b;
+    }
+    #clear-btn {
+      background: #e53935;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<h1>Admin Log</h1>
-<ul id="log-list"></ul>
+  <h1>📜 Admin Logs</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="log-table"></tbody>
+  </table>
+  <button id="clear-btn" onclick="clearLogs()">Clear Logs</button>
 
-<div id="login-modal-bg" onclick="closeLogin()"></div>
-<div id="login-modal">
-  <h3>🔒 Admin Login</h3>
-  <input type="text" id="username-input" placeholder="Username"><br>
-  <input type="password" id="password-input" placeholder="Password"><br>
-  <button id="unlock-btn" onclick="checkPassword()">Unlock</button>
-  <button id="cancel-btn" onclick="closeLogin()">Cancel</button>
-  <p id="error" style="color:red;margin-top:0.5rem;"></p>
-</div>
+  <script>
+    function loadLogs() {
+      let logs = JSON.parse(localStorage.getItem("logs")) || [];
+      const table = document.getElementById("log-table");
+      table.innerHTML = "";
+      logs.forEach(log => {
+        let row = document.createElement("tr");
+        row.innerHTML = `<td>${log.time}</td><td>${log.action}</td>`;
+        table.appendChild(row);
+      });
+    }
 
-<script>
-const users={
-  "cidler6901":{password:"ci259026901",role:"admin"},
-  "tmiller1430":{password:"silvermiler1234",role:"user"}
-};
+    function clearLogs() {
+      if(confirm("Are you sure you want to clear all logs?")) {
+        localStorage.removeItem("logs");
+        loadLogs();
+      }
+    }
 
-function showLogin(){document.getElementById("login-modal-bg").style.display="block";document.getElementById("login-modal").style.display="block";}
-function closeLogin(){document.getElementById("login-modal-bg").style.display="none";document.getElementById("login-modal").style.display="none";document.getElementById("error").innerText="";document.getElementById("username-input").value="";document.getElementById("password-input").value="";}
-
-function checkPassword(){
-  const username=document.getElementById("username-input").value;
-  const password=document.getElementById("password-input").value;
-  if(users[username] && users[username].password===password && users[username].role==="admin"){
-    localStorage.setItem("currentUser",username);
-    localStorage.setItem("role","admin");
-    closeLogin();
-    displayLogs();
-    startLiveUpdate();
-  }else{document.getElementById("error").innerText="❌ Wrong credentials or not admin!";}
-}
-
-function displayLogs(){
-  const logs=JSON.parse(localStorage.getItem("adminLog"))||[];
-  const logList=document.getElementById("log-list");
-  logList.innerHTML="";
-  if(logs.length===0){logList.innerHTML="<li>No logs available.</li>";}
-  else{logs.forEach(entry=>{const li=document.createElement("li");li.textContent=entry;logList.appendChild(li);});}
-  logList.scrollTop=logList.scrollHeight;
-}
-
-function startLiveUpdate(){setInterval(displayLogs,1000);}
-window.onload=()=>{
-  const currentUser=localStorage.getItem("currentUser");
-  const role=localStorage.getItem("role");
-  if(currentUser && role==="admin"){displayLogs();startLiveUpdate();}
-  else{showLogin();}
-};
-</script>
+    window.onload = loadLogs;
+  </script>
 </body>
 </html>

@@ -6,21 +6,16 @@
 <title>Dashboard Proxy</title>
 <style>
   body { font-family: 'Segoe UI', sans-serif; margin:0; background:#f0f2f5; text-align:center; }
-  header { background: linear-gradient(90deg,#6200ea,#03dac6); color:white; padding:30px 20px; box-shadow:0 4px 6px rgba(0,0,0,0.1);}
+  header { background: linear-gradient(90deg,#6200ea,#03dac6); color:white; padding:30px 20px; }
   header h1 { font-size:2.2em; margin-bottom:10px; }
   header p { font-size:1em; }
   .announcement { display:none; background:#fff; padding:15px; margin:20px auto; width:90%; border-radius:15px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
   .proxy-input { display:flex; justify-content:center; margin:20px 0; gap:10px; flex-wrap:wrap; }
-  .proxy-input input { padding:12px 15px; font-size:16px; width:300px; border-radius:25px; border:1px solid #ccc; outline:none; transition: all 0.3s; }
-  .proxy-input input:focus { border-color:#6200ea; }
-  .proxy-input button { padding:12px 25px; font-size:16px; border-radius:25px; border:none; background:#6200ea; color:white; cursor:pointer; transition: all 0.3s; }
-  .proxy-input button:hover { background:#3700b3; }
+  .proxy-input input { padding:12px 15px; font-size:16px; width:300px; border-radius:25px; border:1px solid #ccc; outline:none; }
+  .proxy-input button { padding:12px 25px; font-size:16px; border-radius:25px; border:none; background:#6200ea; color:white; cursor:pointer; }
   .quick-links { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; margin-bottom:20px; }
-  .quick-links button { background:white; padding:15px 25px; border-radius:15px; border:1px solid #ccc; cursor:pointer; min-width:120px; box-shadow:0 3px 6px rgba(0,0,0,0.1); transition: all 0.3s; }
-  .quick-links button:hover { background:#6200ea; color:white; transform:translateY(-3px); }
-  #historySelect { padding:12px; font-size:16px; border-radius:25px; border:1px solid #ccc; margin-bottom:20px; outline:none; transition: all 0.3s; }
-  #historySelect:focus { border-color:#6200ea; }
-  iframe { width:90%; height:70vh; border:none; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.15); margin-bottom:30px; }
+  .quick-links button { background:white; padding:15px 25px; border-radius:15px; border:1px solid #ccc; cursor:pointer; min-width:120px; }
+  iframe { width:90%; height:70vh; border:none; border-radius:15px; margin-bottom:30px; }
   footer { background:#ddd; padding:15px; font-size:14px; text-align:center; }
 </style>
 </head>
@@ -69,35 +64,31 @@ function loadSite() {
   saveToHistory(url);
 }
 
-function loadQuickLink(url) {
-  document.getElementById('urlInput').value = url;
-  loadSite();
-}
+function loadQuickLink(url) { document.getElementById('urlInput').value=url; loadSite(); }
 
-// History Functions
+// History
 function saveToHistory(url) {
   let history = JSON.parse(localStorage.getItem('proxyHistory') || "[]");
-  if (!history.includes(url)) { history.unshift(url); if(history.length>10) history.pop(); localStorage.setItem('proxyHistory', JSON.stringify(history)); updateHistoryDropdown();}
+  if(!history.includes(url)){ history.unshift(url); if(history.length>10) history.pop(); localStorage.setItem('proxyHistory',JSON.stringify(history)); updateHistoryDropdown();}
 }
 function updateHistoryDropdown() {
   let history = JSON.parse(localStorage.getItem('proxyHistory') || "[]");
-  let select = document.getElementById('historySelect');
-  select.innerHTML = '<option value="">--Recent Sites--</option>';
-  history.forEach(url => { let option = document.createElement('option'); option.value = url; option.textContent = url; select.appendChild(option); });
+  let select = document.getElementById('historySelect'); select.innerHTML='<option value="">--Recent Sites--</option>';
+  history.forEach(url=>{ let option=document.createElement('option'); option.value=url; option.textContent=url; select.appendChild(option);});
 }
-function loadFromHistory() { let url=document.getElementById('historySelect').value; if(url){document.getElementById('urlInput').value=url; loadSite(); } }
+function loadFromHistory(){ let url=document.getElementById('historySelect').value; if(url){document.getElementById('urlInput').value=url; loadSite();} }
 updateHistoryDropdown();
 
-// Announcement
+// Load announcement from GitHub raw URL
 function loadAnnouncement() {
-  fetch('announcement.txt')
-    .then(res=>res.text())
-    .then(text=>{
-      if(text.trim()!==""){
-        document.getElementById('announcementTextDisplay').textContent = text;
-        document.getElementById('announcementCard').style.display = 'block';
+  fetch('https://raw.githubusercontent.com/cidler6901/cidler6901.github.io/main/announcement.json')
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.announcement && data.announcement.trim()!==""){
+        document.getElementById('announcementTextDisplay').textContent = data.announcement;
+        document.getElementById('announcementCard').style.display = "block";
       }
-    }).catch(err=>console.log("Announcement not found."));
+    }).catch(err=>console.log("No announcement."));
 }
 loadAnnouncement();
 </script>
